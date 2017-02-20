@@ -74,7 +74,7 @@ var data = {
             noErrors: {
                 image:  allMedia[103],
                 text: "Bravo, tu as fait un sans-faute !! Je suis impressionné !",
-                buttonText: "Commencer le niveau 2",
+                buttonText: "Commencer le niveau 4",
             },
             fewErrors: {
                 image: allMedia[129],
