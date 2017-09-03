@@ -65,7 +65,7 @@ var data = {
             allMedia[21],
             allMedia[25],
             allMedia[26],
-            allMedia[145],
+            allMedia[139],
         ]
     },
     level_3: {
@@ -101,8 +101,8 @@ var data = {
             allMedia[76],
             allMedia[84],
             allMedia[85],
-            allMedia[146],
-            allMedia[148],
+            allMedia[137],
+            allMedia[139],
         ]
     },
     level_4: {
@@ -133,13 +133,9 @@ var data = {
             allMedia[132],
             allMedia[130],
             allMedia[125],
-            allMedia[65],
-            allMedia[67],
-            allMedia[76],
-            allMedia[84],
-            allMedia[85],
-            allMedia[146],
-            allMedia[148],
+            allMedia[124],
+            allMedia[123],
+            allMedia[122],
         ]
     },
     endgame: {

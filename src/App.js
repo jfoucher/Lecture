@@ -52,6 +52,7 @@ class App extends Component {
     }
 
     getNewImage = (index, level = 1) => {
+        console.log('index, level', index, level);
         let medias = data['level_'+level].media;
 
 
@@ -63,7 +64,7 @@ class App extends Component {
 
         var allWords = data['level_'+level].words;
 
-        console.log('getting words', media.words);
+        // console.log('getting words', media.words);
 
         if(typeof media.words !== 'undefined' && typeof media.words['level_'+level] !== 'undefined') {
             allWords = media.words['level_'+level];
@@ -156,7 +157,6 @@ class App extends Component {
             return true;
         }
         if(el === this.state.media.correctWord) {
-
 
             //Player chose correct word, display another image
             let mediaIndex = this.state.currentImageIndex + 1;
