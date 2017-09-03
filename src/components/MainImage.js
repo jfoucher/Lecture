@@ -25,10 +25,10 @@ class MainImage extends Component {
 
 
     componentWillReceiveProps(newProps) {
-        if(!this.props.media || this.props.media.doc == newProps.media.doc) {
+        //if(!this.props.media || this.props.media.doc == newProps.media.doc) {
             this.setState({media: newProps.media});
             return;
-        }
+        //}
         setTimeout(() => {
             this.setState({media: newProps.media});
         }, 250);
