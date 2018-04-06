@@ -4,7 +4,11 @@ import {
     View,
     Text,
     ListView,
-    Switch
+    ScrollView,
+    Switch,
+    TouchableOpacity,
+    Alert,
+    Linking,
 } from 'react-native';
 
 
@@ -22,7 +26,14 @@ class ThanksList extends Component {
         });
 
         let rows = {thanks: [
+            {text: 'Pierre Eloi Bris'},
+            {text: 'Mandy Duclos', link: 'https://tisaneselementerre.fr'},
+            {text: 'Sophie Blum'},
+            {text: 'Audrey Adam'},
             {text: 'Gérard Foucher', link: 'https://gerardfoucher.com'},
+            {text: 'Frédéric Hameon'},
+            {text: 'Jonathan Labejof'},
+            {text: 'Audrey Foucher Chenelle', link: 'http://salinedesarzeau.fr/'},
         ]};
 
         this.state = {
@@ -31,17 +42,31 @@ class ThanksList extends Component {
         };
     }
 
-    generateRegularRow = (rowData, sectionId, rowId) => {
-
-        //console.log('generate row', rowData)
-        return (
-
-            <View key={'row_' + sectionId + rowId} style={styles.listItem}>
-                <Text style={{fontSize: 20}}>{rowData.text}</Text>
-            </View>
-        )
+    openLink(url) {
+        Linking.openURL(url).catch(err => console.error('An error occurred', err));
     }
 
+    generateRegularRow = (rowData, sectionId, rowId) => {
+        if(typeof rowData.link === 'undefined') {
+            return (
+                <View key={'row_' + sectionId + rowId} style={styles.listItem}>
+                    <Text style={{fontSize: 20, lineHeight: 40}}>{rowData.text}</Text>
+                </View>
+            );
+        } else {
+            console.log(rowData.link);
+            return (
+                <TouchableOpacity onPress={this.openLink.bind(this, rowData.link)} key={'row_' + sectionId + rowId}>
+                    <View style={styles.listItem}>
+                        <Text style={{fontSize: 20}}>{rowData.text}</Text>
+                        <View>
+                            <Text style={{fontSize: 40, lineHeight: 40, color: '#999999'}}>›</Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            );
+        }
+    }
 
     generateHeaderRow = (sectionData, sectionID) => {
         console.log('rendering section header', sectionData, sectionID);
@@ -79,7 +104,7 @@ var styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 6
+        padding: 8
     },
 
 

@@ -44,29 +44,35 @@ class Settings extends Component {
 
         let close = require('../../assets/img/icons/close.png');
         return (
-                <Modal animationType={"slide"} transparent={false} visible={this.state.modalVisible} onRequestClose={this.close}>
-                    <Text style={styles.title}>Paramètres</Text>
-                    <View style={styles.gear}>
-                        <TouchableWithoutFeedback onPress={this.close}>
-                            <View style={{flex:1, alignItems: "center", justifyContent: "center", padding:12}}>
-                                <Image source={close} />
-                            </View>
-                        </TouchableWithoutFeedback>
+            <Modal animationType={"slide"} transparent={false} visible={this.state.modalVisible} onRequestClose={this.close}>
+                
+                <View style={styles.modal}>
+                    <View style={{flex: 1}}>
+                        <Text style={styles.title}>Paramètres</Text>
+                        <View style={{marginTop: 0}}>
+                            <SettingsList currentFont={this.props.currentFont} onSettingsChanged={this.props.onChange} />
+                        </View>
                     </View>
-                    <View style={{marginTop: 0}}>
-                        <SettingsList currentFont={this.props.currentFont} onSettingsChanged={this.props.onChange} />
-                    </View>
-                    <View>
+                    <View style={{flex: 1.2}}>
                         <Text style={styles.title}>Remerciements</Text>
                         <ThanksList />
                     </View>
-                </Modal>
+                </View>
+                <View style={styles.gear}>
+                    <TouchableWithoutFeedback onPress={this.close}>
+                        <View style={{flex:1, alignItems: "center", justifyContent: "center", padding:12}}>
+                            <Image source={close} />
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
+            </Modal>
         );
     }
 }
 
 var styles = StyleSheet.create({
     gear: {
+        zIndex: 2,
         position: 'absolute',
         right: 2,
         opacity: 0.5,
@@ -77,6 +83,13 @@ var styles = StyleSheet.create({
         textAlign: "center",
         padding: 10,
         marginTop:  (Platform.OS === 'ios') ? 12 : 0,
+    },
+    modal: {
+        zIndex:1,
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'stretch',
     }
 });
 

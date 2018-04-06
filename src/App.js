@@ -286,13 +286,11 @@ class App extends Component {
         let icon = require('../assets/img/icons/settings.png');
         return (
             <View style={styles.container}>
-
                 <MainImage media={this.state.media} imageText={(this.state.win||this.state.endlevel) ? this.state.imageText: null} />
                 <View style={styles.instructions}>
                     {buttons}
                 </View>
                 <Settings onChange={this.gotNewSettings} currentFont={this.state.buttonFont} visible={this.state.settingsVisible} onClose={() => {this.setState({settingsVisible: false})}} />
-
                 <View style={{position: 'absolute', top:0, right: 2}}>
                     <TouchableWithoutFeedback onPress={() => {console.log('close called');this.setState({settingsVisible: true})}}>
                         <View style={{padding:12, opacity: 0.5}}>
