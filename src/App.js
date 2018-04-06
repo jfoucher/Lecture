@@ -29,7 +29,6 @@ const tada = new Sound('tada.mp3', Sound.MAIN_BUNDLE, (error) => {
 });
 
 
-
 class App extends Component {
     constructor(props) {
         super(props);

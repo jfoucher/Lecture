@@ -7,9 +7,11 @@ import {
     Text,
     TouchableHighlight,
     TouchableWithoutFeedback,
-    Platform
+    Platform,
+    Linking,
 } from 'react-native';
 import SettingsList from './SettingsList';
+import ThanksList from './ThanksList';
 
 class Settings extends Component {
 
@@ -18,6 +20,7 @@ class Settings extends Component {
         this.state = {
             modalVisible: false,
         }
+        this.linkClicked = this.linkClicked.bind(this);
     }
 
     componentWillReceiveProps(newProps) {
@@ -31,6 +34,10 @@ class Settings extends Component {
     close = () => {
         this.setState({modalVisible: false});
         this.props.onClose()
+    }
+
+    linkClicked(ev) {
+
     }
 
     render() {
@@ -48,6 +55,10 @@ class Settings extends Component {
                     </View>
                     <View style={{marginTop: 0}}>
                         <SettingsList currentFont={this.props.currentFont} onSettingsChanged={this.props.onChange} />
+                    </View>
+                    <View>
+                        <Text style={styles.title}>Remerciements</Text>
+                        <ThanksList />
                     </View>
                 </Modal>
         );
@@ -67,7 +78,6 @@ var styles = StyleSheet.create({
         padding: 10,
         marginTop:  (Platform.OS === 'ios') ? 12 : 0,
     }
-
 });
 
 
