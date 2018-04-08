@@ -44,6 +44,10 @@
 		ABCF8C8220796E38007C2C93 /* awesome.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABCF8C8120796E38007C2C93 /* awesome.mp3 */; };
 		ABCF8C8420796EC5007C2C93 /* good.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABCF8C8320796EC5007C2C93 /* good.mp3 */; };
 		ABCF8C8620796ECD007C2C93 /* great.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABCF8C8520796ECD007C2C93 /* great.mp3 */; };
+		ABCF8C8B207A737D007C2C93 /* perfect.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABCF8C87207A737A007C2C93 /* perfect.mp3 */; };
+		ABCF8C8C207A737E007C2C93 /* fantastic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABCF8C88207A737A007C2C93 /* fantastic.mp3 */; };
+		ABCF8C8D207A737E007C2C93 /* ok.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABCF8C89207A737B007C2C93 /* ok.mp3 */; };
+		ABCF8C8E207A737E007C2C93 /* super.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABCF8C8A207A737B007C2C93 /* super.mp3 */; };
 		ABDE301B1F69C11A00748187 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 /* End PBXBuildFile section */
@@ -382,6 +386,10 @@
 		ABCF8C8120796E38007C2C93 /* awesome.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = awesome.mp3; path = ../assets/sounds/awesome.mp3; sourceTree = "<group>"; };
 		ABCF8C8320796EC5007C2C93 /* good.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = good.mp3; path = ../assets/sounds/good.mp3; sourceTree = "<group>"; };
 		ABCF8C8520796ECD007C2C93 /* great.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = great.mp3; path = ../assets/sounds/great.mp3; sourceTree = "<group>"; };
+		ABCF8C87207A737A007C2C93 /* perfect.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = perfect.mp3; path = ../assets/sounds/perfect.mp3; sourceTree = "<group>"; };
+		ABCF8C88207A737A007C2C93 /* fantastic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = fantastic.mp3; path = ../assets/sounds/fantastic.mp3; sourceTree = "<group>"; };
+		ABCF8C89207A737B007C2C93 /* ok.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = ok.mp3; path = ../assets/sounds/ok.mp3; sourceTree = "<group>"; };
+		ABCF8C8A207A737B007C2C93 /* super.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = super.mp3; path = ../assets/sounds/super.mp3; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		F740BAB1BA1D48338E0D3C02 /* libRNSound.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSound.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -616,6 +624,10 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				ABCF8C88207A737A007C2C93 /* fantastic.mp3 */,
+				ABCF8C89207A737B007C2C93 /* ok.mp3 */,
+				ABCF8C87207A737A007C2C93 /* perfect.mp3 */,
+				ABCF8C8A207A737B007C2C93 /* super.mp3 */,
 				ABCF8C8320796EC5007C2C93 /* good.mp3 */,
 				ABCF8C8520796ECD007C2C93 /* great.mp3 */,
 				ABCF8C8120796E38007C2C93 /* awesome.mp3 */,
@@ -1159,6 +1171,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				ABCF8C8C207A737E007C2C93 /* fantastic.mp3 in Resources */,
+				ABCF8C8D207A737E007C2C93 /* ok.mp3 in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				AB8C5BF81E43D25400E379E8 /* tada.mp3 in Resources */,
 				ABCF8C8620796ECD007C2C93 /* great.mp3 in Resources */,
@@ -1166,6 +1180,8 @@
 				ABAA81331E3B87CF005562F5 /* Cursive standard.ttf in Resources */,
 				AB1FC6C51E3A1E7D003740D2 /* PatrickHandSC-Regular.ttf in Resources */,
 				ABCF8C8220796E38007C2C93 /* awesome.mp3 in Resources */,
+				ABCF8C8B207A737D007C2C93 /* perfect.mp3 in Resources */,
+				ABCF8C8E207A737E007C2C93 /* super.mp3 in Resources */,
 				ABCF8C8420796EC5007C2C93 /* good.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

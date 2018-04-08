@@ -17,7 +17,7 @@ import Settings from './components/Settings'
 import Button from './components/Button'
 import data from './data'
 import {shuffle} from './utils'
-import Sound from 'react-native-sound'
+import Sound from './Sound'
 
 const LEVEL_CONSTANT = 4;
 
@@ -25,19 +25,19 @@ const tada = new Sound('tada.mp3', Sound.MAIN_BUNDLE, (error) => {
     if (error) {
         console.log('failed to load the sound', error);
     } else { // loaded successfully
-        console.log('duration in seconds: ' + tada.getDuration() +
-            'number of channels: ' + tada.getNumberOfChannels());
+        console.log('sound loaded successfully', 'tada.mp3');
     }
 });
 
-const successSounds = ['awesome.mp3', 'great.mp3', 'good.mp3'].map((s) => {
-    return new Sound(s, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-            console.log('failed to load the sound', error);
-        } else { // loaded successfully
-            console.log('duration in seconds: ' + tada.getDuration() +
-                'number of channels: ' + tada.getNumberOfChannels());
-        }
+const successSounds = [['awesome.mp3', 'fantastic.mp3', 'perfect.mp3'], ['great.mp3', 'super.mp3'], ['good.mp3', 'ok.mp3']].map((ss) => {
+    return ss.map((s) => {
+        return new Sound(s, Sound.MAIN_BUNDLE, (error) => {
+            if (error) {
+                console.log('failed to load the sound', error);
+            } else { // loaded successfully
+                console.log('sound loaded successfully', s);
+            }
+        });
     });
 });
 
@@ -181,8 +181,8 @@ class App extends Component {
         if(el === this.state.media.correctWord) {
             this.setState({disableButtons: true});
             //Player chose correct word, display another image
-            successSounds[this.state.currentWordErrors].play((success) => {
-
+            const sounds = successSounds[this.state.currentWordErrors]
+            sounds[Math.floor(Math.random()*sounds.length)].play((success) => {
                 let level = Math.floor(this.state.currentImageIndex / LEVEL_CONSTANT - this.state.errors / LEVEL_CONSTANT * 2) + 1;
                 if (level < 1) {
                     level = 1;
@@ -212,6 +212,8 @@ class App extends Component {
                     disableButtons: false,
                 });
             });
+
+
 
             //TODO Remove this word from error words if it comes from another level
             this.setState({currentWordErrors: 0});
@@ -258,7 +260,7 @@ class App extends Component {
     };
 
     render() {
-
+        console.log('current font', this.state.buttonFont);
         //TODO add animations when changing between images
 
         console.log('rendering app, settings statuts', this.state.settingsVisible);
@@ -292,7 +294,7 @@ class App extends Component {
                 <View style={{position: 'absolute', top:0, right: 2}}>
                     <TouchableWithoutFeedback onPress={() => {console.log('close called');this.setState({settingsVisible: true})}}>
                         <View style={{padding:12, opacity: 0.5}}>
-                            <Image source={icon} />
+                            <Image source={icon} style={{height: 24, width: 24}} />
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
@@ -303,6 +305,7 @@ class App extends Component {
 
 const styles = StyleSheet.create({
     container: {
+        position: 'relative',
         marginTop:  (Platform.OS === 'ios') ? 12 : 0,
         flex: 1,
         flexDirection: 'column',

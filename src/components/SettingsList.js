@@ -4,7 +4,8 @@ import {
     View,
     Text,
     ListView,
-    Switch
+    Switch,
+    Platform,
 } from 'react-native';
 
 
@@ -21,10 +22,13 @@ class SettingsList extends Component {
             }
         });
 
+        const systemFont = (Platform.OS === 'web') ? 'sans-serif' : 'System';
+        const cursiveFont = (Platform.OS === 'web') ? 'CursiveStandard' : 'Cursive standard';
+
         let rows = {police: [
             {text: 'Majuscules', font: 'Patrick Hand SC', active: props.currentFont === 'Patrick Hand SC'},
-            {text: 'Cursive', font: 'Cursive standard', active: props.currentFont === 'Cursive standard'},
-            {text: 'Imprimerie', font: 'System', active: props.currentFont === 'System'},
+            {text: 'Cursive', font: cursiveFont, active: props.currentFont === cursiveFont},
+            {text: 'Imprimerie', font: systemFont, active: props.currentFont === systemFont},
         ]};
 
         this.state = {

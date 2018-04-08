@@ -55,42 +55,38 @@ class Button extends Component {
         }
 
         return(
-
-                <TouchableWithoutFeedback
-                    activeOpacity={0.8}
-                    underlayColor={this.state.underlayColor}
-                    onPress={this.handlePress.bind(this, label)}
-                    onPressOut={()=>{
-                    this.setState({
-                        shadow: {
-                            shadowColor: "#000000",
-                            shadowRadius: 1.5,
-                            shadowOpacity: 0.4,
-                            shadowOffset: {width: 0.5, height: 1},
-                            elevation: 2,
-                        }
-                    });
-                    }}
-                    onPressIn={()=>{
-                    this.setState({
-                        shadow: {
-                            shadowColor: "#000000",
-                            shadowRadius: 0.6,
-                            shadowOpacity: 0.2,
-                            shadowOffset: {width: 0.5, height: 1},
-                            elevation: 1,
-                        }
-                    });
-                    }}
-                    disabled={this.state.disabled || this.props.disable}
-                    >
-                    <View style={[styles.button, this.state.shadow, this.state.style]}>
-                        <Text style={[styles.buttonText, {fontFamily: font}, disabledStyle]}>
-                            {label}
-                        </Text>
-                    </View>
-                </TouchableWithoutFeedback>
-
+            <TouchableWithoutFeedback
+                onPress={this.handlePress.bind(this, label)}
+                onPressOut={()=>{
+                this.setState({
+                    shadow: {
+                        shadowColor: "#000000",
+                        shadowRadius: 1.5,
+                        shadowOpacity: 0.4,
+                        shadowOffset: {width: 0.5, height: 1},
+                        elevation: 2,
+                    }
+                });
+                }}
+                onPressIn={()=>{
+                this.setState({
+                    shadow: {
+                        shadowColor: "#000000",
+                        shadowRadius: 0.6,
+                        shadowOpacity: 0.2,
+                        shadowOffset: {width: 0.5, height: 1},
+                        elevation: 1,
+                    }
+                });
+                }}
+                disabled={this.state.disabled || this.props.disable}
+                >
+                <View style={[styles.button, this.state.shadow, this.state.style]}>
+                    <Text style={[styles.buttonText, {fontFamily: font}, disabledStyle]}>
+                        {label}
+                    </Text>
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
 }
@@ -101,6 +97,7 @@ const styles = StyleSheet.create({
         margin:8,
         borderColor: '#cccccc',
         borderWidth:  (Platform.OS === 'ios') ? 0 : 1,
+        
     },
     buttonText: {
         backgroundColor: 'transparent',

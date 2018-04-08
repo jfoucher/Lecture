@@ -3,13 +3,13 @@ import {
     Image,
     StyleSheet,
     View,
-    Modal,
     Text,
     TouchableHighlight,
     TouchableWithoutFeedback,
     Platform,
     Linking,
 } from 'react-native';
+import Modal from 'react-native-web-modal';
 import SettingsList from './SettingsList';
 import ThanksList from './ThanksList';
 
@@ -44,7 +44,7 @@ class Settings extends Component {
 
         let close = require('../../assets/img/icons/close.png');
         return (
-            <Modal animationType={"slide"} transparent={false} visible={this.state.modalVisible} onRequestClose={this.close}>
+            <Modal animationType={"slide"} transparent={false} visible={this.state.modalVisible} onRequestClose={this.close} style={{display: this.state.modalVisible ? 'flex' : 'none'}}>
                 
                 <View style={styles.modal}>
                     <View style={{flex: 0.4}}>
@@ -53,15 +53,17 @@ class Settings extends Component {
                             <SettingsList currentFont={this.props.currentFont} onSettingsChanged={this.props.onChange} />
                         </View>
                     </View>
-                    <View style={{flex: 0.6}}>
-                        <Text style={styles.title}>Remerciements</Text>
-                        <ThanksList />
-                    </View>
+                    { Platform.OS === 'web' ? null : 
+                        <View style={{flex: 0.6}}>
+                            <Text style={styles.title}>Remerciements</Text>
+                            <ThanksList />
+                        </View>
+                    }
                 </View>
                 <View style={styles.gear}>
                     <TouchableWithoutFeedback onPress={this.close}>
                         <View style={{flex:1, alignItems: "center", justifyContent: "center", padding:12}}>
-                            <Image source={close} />
+                            <Image source={close} style={{height: 24, width: 24}} />
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
@@ -72,11 +74,14 @@ class Settings extends Component {
 
 var styles = StyleSheet.create({
     gear: {
-        zIndex: 2,
         position: 'absolute',
         right: 2,
-        opacity: 0.5,
+        top: 0,
+        opacity: 1,
         marginTop:  (Platform.OS === 'ios') ? 12 : 0,
+        height: 48,
+        width: 48,
+        zIndex: 100,
     },
     title: {
         fontSize: 20,
@@ -85,7 +90,6 @@ var styles = StyleSheet.create({
         marginTop:  (Platform.OS === 'ios') ? 12 : 0,
     },
     modal: {
-        zIndex:1,
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',

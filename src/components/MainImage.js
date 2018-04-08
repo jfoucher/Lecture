@@ -53,7 +53,6 @@ class MainImage extends Component {
     }
 
     render() {
-
         var display;
         if(this.state.media && this.state.media.type == "image") {
             display = <Animated.Image
@@ -92,13 +91,11 @@ class MainImage extends Component {
 
 var styles = StyleSheet.create({
     container: {
-
         flex:1,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: "transparent",
-
     },
     win: {
         backgroundColor: "transparent",
