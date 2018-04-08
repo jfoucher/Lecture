@@ -18,7 +18,10 @@ export default class Sound {
     console.log('playing sound', this.sound, cb);
     if (this.sound.state() !== 'loaded') return this;
     this.sound.play();
-    this.sound.on('end', cb);
+    if (typeof cb !== undefined) {
+      this.sound.once('end', cb);
+    }
+    
     return this;
   }
 

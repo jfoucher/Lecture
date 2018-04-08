@@ -78,7 +78,7 @@ class SettingsList extends Component {
 
 
     generateHeaderRow = (sectionData, sectionID) => {
-        console.log('rendering section header', sectionData, sectionID);
+        // console.log('rendering section header', sectionData, sectionID);
             return (
                 <View key={'section_'+sectionID} style={{padding: 5, backgroundColor: "#eeeeee"}}>
                     <Text style={{fontSize: 16}}>{(sectionID == 'police') ? 'Police de caractères' : 'Default header'}</Text>

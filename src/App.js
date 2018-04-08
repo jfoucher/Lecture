@@ -20,12 +20,15 @@ import {shuffle} from './utils'
 import Sound from './Sound'
 
 const LEVEL_CONSTANT = 4;
+const ERROR_FACTOR = 1.32;
+const DECAY_FACTOR = 1.2;
+const USED_FACTOR = 2;
 
 const tada = new Sound('tada.mp3', Sound.MAIN_BUNDLE, (error) => {
     if (error) {
-        console.log('failed to load the sound', error);
+        console.error('failed to load the sound', error);
     } else { // loaded successfully
-        console.log('sound loaded successfully', 'tada.mp3');
+        //console.log('sound loaded successfully', 'tada.mp3');
     }
 });
 
@@ -33,9 +36,9 @@ const successSounds = [['awesome.mp3', 'fantastic.mp3', 'perfect.mp3'], ['great.
     return ss.map((s) => {
         return new Sound(s, Sound.MAIN_BUNDLE, (error) => {
             if (error) {
-                console.log('failed to load the sound', error);
+                console.error('failed to load the sound', error);
             } else { // loaded successfully
-                console.log('sound loaded successfully', s);
+                //console.log('sound loaded successfully', s);
             }
         });
     });
@@ -57,6 +60,7 @@ class App extends Component {
             errors: 0,
             disableButtons: false,
         }
+        this.onPressButton = this.onPressButton.bind(this);
     }
 
     gotNewSettings = (font) => {
@@ -68,24 +72,24 @@ class App extends Component {
 
     getNewImage = () => {
         //Choose a random image
-        console.log('data.media', data.media);
+        //console.log('data.media', data.media);
         const medias = shuffle(data.media.filter((m) => {
             return m.difficulty <= this.state.currentLevel;
         })).sort((a, b) => {
             return b.priority - a.priority;
         });
 
-        console.log('medias', medias);
+        // console.log('medias', medias);
 
         const media = medias[0];
-        //reduce usage for all words
+        //increase priority for all words
         data.media.forEach((m, i) => {
-            data.media[i].priority  = m.priority / 1.2;
+            data.media[i].priority  = m.priority * DECAY_FACTOR;
         });
         //Word has been used, so decrease priority
         data.media.forEach((m, i) => {
             if (m.correctWord == media.correctWord) {
-                data.media[i].priority -= 1;
+                data.media[i].priority /= USED_FACTOR;
             }
         });
 
@@ -100,7 +104,7 @@ class App extends Component {
             }
             return true;
         });
-        console.log('levelWords', levelWords);
+        //console.log('levelWords', levelWords);
         if (levelWords.length < 2) {
             shuffle(allWords).slice(0, 2).forEach((w) => {
                 levelWords.push(w);
@@ -113,7 +117,7 @@ class App extends Component {
     }
 
     getResultForNumberOfErrors = (numberOfErrors) => {
-        console.log('getting status of errors', numberOfErrors, this.state.currentImageIndex);
+        //console.log('getting status of errors', numberOfErrors, this.state.currentImageIndex);
         if(!numberOfErrors) {
             return 'noErrors'
         } else if(numberOfErrors / this.state.currentImageIndex <= 0.5) {
@@ -124,17 +128,20 @@ class App extends Component {
     }
 
     componentDidMount() {
-        let {media, words} = this.getNewImage(this.state.currentImageIndex, this.state.currentLevel);
+        console.log('componentDidMount called');
+        let {media, words} = this.getNewImage();
         this.setState({media, words});
+        const cursiveFont = (Platform.OS === 'web') ? 'CursiveStandard' : 'Cursive standard';
         AsyncStorage.getItem('@Lecture:Settings:ButtonFont').then((font) => {
             //Get previously selected font
+            
             if(!font) {
-                font = 'Cursive standard';
+                font = cursiveFont;
             }
             this.setState({buttonFont: font});
         }).catch(() => {
-            AsyncStorage.setItem('@Lecture:Settings:ButtonFont', 'Cursive standard');
-            this.setState({buttonFont: 'Cursive standard'});
+            AsyncStorage.setItem('@Lecture:Settings:ButtonFont', cursiveFont);
+            this.setState({buttonFont: cursiveFont});
         });
         //Reset number of errors for level.
         //TODO maybe restart from where user left off
@@ -144,25 +151,27 @@ class App extends Component {
 
     restartGame = () => {
         for (var l in data) {
-            console.log('clearing level errors', l.substr(0, 5), l.substring(l.indexOf('_')+1))
+            //console.log('clearing level errors', l.substr(0, 5), l.substring(l.indexOf('_')+1))
             if (data.hasOwnProperty(l) && l.substr(0, 5) == 'level') {
                 AsyncStorage.setItem('@Lecture:numberOfErrors:level'+l.substring(l.indexOf('_')+1), JSON.stringify(0));
             }
         }
 
-        let {media, words} = this.getNewImage(0);
-        this.setState({win:false, endlevel: false, endgame: false, media: media, words: words, currentImageIndex: 0, currentLevel: 1});
-        return true;
-    }
-
-    restartLevel = () => {
-        AsyncStorage.setItem('@Lecture:numberOfErrors:level'+this.state.currentLevel, JSON.stringify(0));
-        let {media, words} = this.getNewImage(0, this.state.currentLevel);
-        this.setState({win:false, endgame: false, endlevel: false, media: media, words: words, currentImageIndex: 0});
+        let {media, words} = this.getNewImage();
+        this.setState({
+            win:false,
+            endlevel: false,
+            endgame: false,
+            media: media,
+            words: words,
+            currentImageIndex: 0,
+            currentLevel: 1
+        });
         return true;
     }
 
     onPressButton = (el) => {
+        console.log('button pressed');
         //TODO add a new word and shuffle buttons on error
         if(this.state.win === true) {
             //Clicked button to go to next level, set win to false and get new image
@@ -172,7 +181,13 @@ class App extends Component {
             AsyncStorage.getItem('@Lecture:numberOfErrors:level'+this.state.currentLevel).then((str) => {
                 let {media, words} = this.getNewImage();
                 if(media && words) {
-                    this.setState({media: media, words: words, win: false, errors: 0, currentImageIndex: 0});
+                    this.setState({
+                        media: media,
+                        words: words,
+                        win: false,
+                        errors: 0,
+                        currentImageIndex: 0,
+                    });
                 }
             });
             return true;
@@ -189,7 +204,9 @@ class App extends Component {
                 }
                 if(level > this.state.currentLevel && this.state.currentImageIndex > LEVEL_CONSTANT) {
                     //Show level change screen
+                    console.log('changing level to ', level);
                     let result = this.getResultForNumberOfErrors(this.state.errors);
+                    console.log('got error result ', result);
                     this.setState({
                         win: true,
                         endgame: false,
@@ -200,23 +217,24 @@ class App extends Component {
                         disableButtons: false,
                     }, () => {
                         tada.play();
+                        console.log('level change state set');
                     });
-                    return;
+                } else {
+                    console.log('loading new image');
+                    let {media, words} = this.getNewImage();
+                    this.setState({
+                        media: media,
+                        words: words,
+                        currentImageIndex: this.state.currentImageIndex + 1,
+                        disableButtons: false,
+                        currentWordErrors: 0,
+                    }, () => {
+                        console.log('did set state for new image');
+                    });
                 }
-
-                let {media, words} = this.getNewImage();
-                this.setState({
-                    media: media,
-                    words: words,
-                    currentImageIndex: this.state.currentImageIndex + 1,
-                    disableButtons: false,
-                });
             });
 
-
-
-            //TODO Remove this word from error words if it comes from another level
-            this.setState({currentWordErrors: 0});
+            
             return true;
         } else {
             this.setState({
@@ -226,7 +244,7 @@ class App extends Component {
                     //Word was wrong, so increase priority
             data.media.forEach((m, i) => {
                 if (m.correctWord == this.state.media.correctWord) {
-                    data.media[i].priority += 0.45;
+                    data.media[i].priority *= ERROR_FACTOR;
                 }
             });
             //Player did not choose the right word
@@ -260,11 +278,6 @@ class App extends Component {
     };
 
     render() {
-        console.log('current font', this.state.buttonFont);
-        //TODO add animations when changing between images
-
-        console.log('rendering app, settings statuts', this.state.settingsVisible);
-
         var buttons = this.state.words.map((word) => {
             return (
                 <Button key={this.state.currentImageIndex + '' + word} onPress={this.onPressButton} label={word} font={this.state.buttonFont} disable={this.state.disableButtons} />

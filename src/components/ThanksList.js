@@ -41,7 +41,7 @@ class ThanksList extends Component {
     }
 
     _renderItem = (rowData) => {
-        console.log(rowData);
+        // console.log(rowData);
         const item = rowData.item;
         if(typeof item.link === 'undefined') {
             return (
@@ -64,7 +64,7 @@ class ThanksList extends Component {
     }
 
     generateHeaderRow = (sectionData, sectionID) => {
-        console.log('rendering section header', sectionData, sectionID);
+        // console.log('rendering section header', sectionData, sectionID);
             return (
                 <View key={'section_'+sectionID} style={{height: 0, borderTopColor: "#dddddd", borderTopWidth: 1}}>
                 </View>

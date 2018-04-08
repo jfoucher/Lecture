@@ -24,7 +24,7 @@ class Settings extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        console.log('settings component will receive props', newProps);
+        // console.log('settings component will receive props', newProps);
         this.setState({modalVisible: newProps.visible});
     }
 
