@@ -22,8 +22,6 @@ class MainImage extends Component {
         }
     }
 
-
-
     componentWillReceiveProps(newProps) {
         //if(!this.props.media || this.props.media.doc == newProps.media.doc) {
             this.setState({media: newProps.media});

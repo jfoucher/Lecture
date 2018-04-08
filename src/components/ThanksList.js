@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     Alert,
     Linking,
+    FlatList,
 } from 'react-native';
 
 
@@ -54,7 +55,6 @@ class ThanksList extends Component {
                 </View>
             );
         } else {
-            console.log(rowData.link);
             return (
                 <TouchableOpacity onPress={this.openLink.bind(this, rowData.link)} key={'row_' + sectionId + rowId}>
                     <View style={styles.listItem}>
@@ -85,7 +85,6 @@ class ThanksList extends Component {
                     return this.generateRegularRow(rowData, sectionId, rowId)
                 }}
                 renderSectionHeader= {(sectionData, sectionID) => {
-
                     return this.generateHeaderRow(sectionData, sectionID)
                 }}
                 renderSeparator={(sectionID, rowID) => {

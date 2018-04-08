@@ -6,7 +6,8 @@ import {
     TouchableWithoutFeedback,
     TouchableHighlight,
     AsyncStorage,
-    Dimensions
+    Dimensions,
+    Platform,
 } from 'react-native';
 
 var {height, width} = Dimensions.get('window');
@@ -22,7 +23,8 @@ class Button extends Component {
                 shadowOffset: {width: 0.5, height: 1},
                 elevation: 2,
             },
-            disabled: false
+            disabled: false,
+            style: {},
         }
     }
 
@@ -30,11 +32,11 @@ class Button extends Component {
         let result = this.props.onPress.call(this, word);
         if(result) {
             this.setState({
-                disabled: false
+                disabled: false,
+                style: {backgroundColor: "#c0ffc0",},
             });
         } else {
             //TODO save error word
-
             this.setState({
                 disabled: true
             })
@@ -80,9 +82,9 @@ class Button extends Component {
                         }
                     });
                     }}
-                    disabled={this.state.disabled}
+                    disabled={this.state.disabled || this.props.disable}
                     >
-                    <View style={[styles.button, this.state.shadow]}>
+                    <View style={[styles.button, this.state.shadow, this.state.style]}>
                         <Text style={[styles.buttonText, {fontFamily: font}, disabledStyle]}>
                             {label}
                         </Text>
@@ -97,7 +99,8 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: "#fffff3",
         margin:8,
-
+        borderColor: '#cccccc',
+        borderWidth:  (Platform.OS === 'ios') ? 0 : 1,
     },
     buttonText: {
         backgroundColor: 'transparent',

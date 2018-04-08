@@ -19,6 +19,8 @@ import data from './data'
 import {shuffle} from './utils'
 import Sound from 'react-native-sound'
 
+const LEVEL_CONSTANT = 4;
+
 const tada = new Sound('tada.mp3', Sound.MAIN_BUNDLE, (error) => {
     if (error) {
         console.log('failed to load the sound', error);
@@ -26,6 +28,17 @@ const tada = new Sound('tada.mp3', Sound.MAIN_BUNDLE, (error) => {
         console.log('duration in seconds: ' + tada.getDuration() +
             'number of channels: ' + tada.getNumberOfChannels());
     }
+});
+
+const successSounds = ['awesome.mp3', 'great.mp3', 'good.mp3'].map((s) => {
+    return new Sound(s, Sound.MAIN_BUNDLE, (error) => {
+        if (error) {
+            console.log('failed to load the sound', error);
+        } else { // loaded successfully
+            console.log('duration in seconds: ' + tada.getDuration() +
+                'number of channels: ' + tada.getNumberOfChannels());
+        }
+    });
 });
 
 
@@ -40,6 +53,9 @@ class App extends Component {
             win: false,
             buttonFont: 'Cursive standard',
             settingsVisible: false,
+            currentWordErrors: 0,
+            errors: 0,
+            disableButtons: false,
         }
     }
 
@@ -50,43 +66,57 @@ class App extends Component {
         }
     }
 
-    getNewImage = (index, level = 1) => {
-        console.log('index, level', index, level);
-        let medias = data['level_'+level].media;
-
-
-        if(index >= medias.length) {
-            return false;
-        }
+    getNewImage = () => {
         //Choose a random image
-        let media = medias[index];
+        console.log('data.media', data.media);
+        const medias = shuffle(data.media.filter((m) => {
+            return m.difficulty <= this.state.currentLevel;
+        })).sort((a, b) => {
+            return b.priority - a.priority;
+        });
 
-        var allWords = data['level_'+level].words;
+        console.log('medias', medias);
 
-        // console.log('getting words', media.words);
+        const media = medias[0];
+        //reduce usage for all words
+        data.media.forEach((m, i) => {
+            data.media[i].priority  = m.priority / 1.2;
+        });
+        //Word has been used, so decrease priority
+        data.media.forEach((m, i) => {
+            if (m.correctWord == media.correctWord) {
+                data.media[i].priority -= 1;
+            }
+        });
 
-        if(typeof media.words !== 'undefined' && typeof media.words['level_'+level] !== 'undefined') {
-            allWords = media.words['level_'+level];
+        let allWords = data.words.filter((el) => {
+            return el !== media.correctWord;
+        });
+
+        //if level is high, choose words that start with the same letter
+        const levelWords = allWords.filter((el) => {
+            if (this.state.currentLevel >= 3) {
+                return el.substr(0, 1) === media.correctWord.substr(0, 1);
+            }
+            return true;
+        });
+        console.log('levelWords', levelWords);
+        if (levelWords.length < 2) {
+            shuffle(allWords).slice(0, 2).forEach((w) => {
+                levelWords.push(w);
+            });
         }
 
-        console.log('all words', allWords);
+        const words = shuffle(levelWords).slice(0, 2).concat([media.correctWord]);
 
-        let words = shuffle(allWords.filter((el) => {
-            return el !== media.correctWord;
-        })).slice(0,2).concat([media.correctWord]);
-
-
-
-        return {media: media, words: shuffle(words)};
+        return {media, words: shuffle(words)};
     }
 
     getResultForNumberOfErrors = (numberOfErrors) => {
-
-        var res = numberOfErrors / data['level_'+this.state.currentLevel].media.length;
-
-        if(!res) {
+        console.log('getting status of errors', numberOfErrors, this.state.currentImageIndex);
+        if(!numberOfErrors) {
             return 'noErrors'
-        } else if(res <= 0.2) {
+        } else if(numberOfErrors / this.state.currentImageIndex <= 0.5) {
             return 'fewErrors';
         } else {
             return 'lotErrors';
@@ -95,7 +125,7 @@ class App extends Component {
 
     componentDidMount() {
         let {media, words} = this.getNewImage(this.state.currentImageIndex, this.state.currentLevel);
-        this.setState({media: media, words: words});
+        this.setState({media, words});
         AsyncStorage.getItem('@Lecture:Settings:ButtonFont').then((font) => {
             //Get previously selected font
             if(!font) {
@@ -113,17 +143,12 @@ class App extends Component {
     }
 
     restartGame = () => {
-
         for (var l in data) {
-
             console.log('clearing level errors', l.substr(0, 5), l.substring(l.indexOf('_')+1))
             if (data.hasOwnProperty(l) && l.substr(0, 5) == 'level') {
-
-
                 AsyncStorage.setItem('@Lecture:numberOfErrors:level'+l.substring(l.indexOf('_')+1), JSON.stringify(0));
             }
         }
-
 
         let {media, words} = this.getNewImage(0);
         this.setState({win:false, endlevel: false, endgame: false, media: media, words: words, currentImageIndex: 0, currentLevel: 1});
@@ -142,93 +167,66 @@ class App extends Component {
         if(this.state.win === true) {
             //Clicked button to go to next level, set win to false and get new image
             //TODO only go to next level if no errors, otherwise start current level again
+
+            //TODO there is conflict in the level changing process
             AsyncStorage.getItem('@Lecture:numberOfErrors:level'+this.state.currentLevel).then((str) => {
-                let ers = JSON.parse(str);
-                var newLevel = this.state.currentLevel + 1;
-                if(ers && ers > 2) {
-                    newLevel = this.state.currentLevel
-                }
-                let {media, words} = this.getNewImage(0, newLevel);
+                let {media, words} = this.getNewImage();
                 if(media && words) {
-                    this.setState({media: media, words: words, win: false, currentImageIndex: 0, currentLevel: newLevel});
+                    this.setState({media: media, words: words, win: false, errors: 0, currentImageIndex: 0});
                 }
             });
             return true;
         }
+
         if(el === this.state.media.correctWord) {
-
+            this.setState({disableButtons: true});
             //Player chose correct word, display another image
-            let mediaIndex = this.state.currentImageIndex + 1;
-            let {media, words} = this.getNewImage(mediaIndex, this.state.currentLevel);
+            successSounds[this.state.currentWordErrors].play((success) => {
 
-            console.log('Player chose wisely', media, words, mediaIndex, this.state.currentLevel);
+                let level = Math.floor(this.state.currentImageIndex / LEVEL_CONSTANT - this.state.errors / LEVEL_CONSTANT * 2) + 1;
+                if (level < 1) {
+                    level = 1;
+                }
+                if(level > this.state.currentLevel && this.state.currentImageIndex > LEVEL_CONSTANT) {
+                    //Show level change screen
+                    let result = this.getResultForNumberOfErrors(this.state.errors);
+                    this.setState({
+                        win: true,
+                        endgame: false,
+                        words: ['Passer au niveau ' + level + ' !'],
+                        imageText: data.endlevel[result].text.replace('%%n%%', this.state.errors + ' faute' + ((this.state.errors > 1) ? 's' : '')),
+                        media: data.endlevel[result].image,
+                        currentLevel: level,
+                        disableButtons: false,
+                    }, () => {
+                        tada.play();
+                    });
+                    return;
+                }
 
-            if(media && words) {
-                //Next image exists, display
-                this.setState({media: media, words: words, currentImageIndex: this.state.currentImageIndex + 1});
-            } else {
-                //No next image, player has finished level
-                AsyncStorage.getItem('@Lecture:numberOfErrors:level'+this.state.currentLevel).then((str) => {
-                    //Get number of errors
-                    let ers = JSON.parse(str);
-                    let result = this.getResultForNumberOfErrors(ers);
-                    console.log('result', result)
-                    if(result === 'noErrors' || result === 'fewErrors') {
-
-                        //Play victory sound
-                        tada.play((success) => {
-                            if (success) {
-                                console.log('successfully finished playing');
-                            } else {
-                                console.log('playback failed due to audio decoding errors');
-                            }
-                        });
-
-                        //If player has no or few errors, got to next level if available
-                        if(typeof data['level_'+(this.state.currentLevel+1)] === 'undefined') {
-                            //No next level, endgame
-
-                            this.setState({
-                                win: true,
-                                endgame: true,
-                                words: [],
-                                imageText: data.endgame[result].text.replace('%%n%%', ers + ' faute' + ((ers > 1) ? 's' : '')),
-                                media: data.endgame[result].image
-                            });
-                        } else {
-                            //Next level, offer to do it
-                            console.log('has next level', 'level_'+this.state.currentLevel)
-                            console.log('image is', data['level_'+this.state.currentLevel].endlevel[result].image);
-                            this.setState({
-                                win: true,
-                                media: data['level_'+this.state.currentLevel].endlevel[result].image,
-                                words: [data['level_'+this.state.currentLevel].endlevel[result].buttonText],
-                                imageText: data['level_'+this.state.currentLevel].endlevel[result].text.replace('%%n%%', ers+' faute'+((ers>1) ? 's' : ''))
-                            });
-                        }
-                    } else {
-                        //Too many errors, offer to restart level
-                        let text = data['level_'+this.state.currentLevel].endlevel[result].text.replace('%%n%%', ers+' faute'+((ers>1) ? 's' : ''));
-                        console.log('text', text);
-                        this.setState({
-                            win: false,
-                            endgame: false,
-                            endlevel: true,
-                            media: data['level_'+this.state.currentLevel].endlevel[result].image,
-                            words: [],
-                            imageText: text
-                        });
-                    }
-
-
+                let {media, words} = this.getNewImage();
+                this.setState({
+                    media: media,
+                    words: words,
+                    currentImageIndex: this.state.currentImageIndex + 1,
+                    disableButtons: false,
                 });
-
-            }
+            });
 
             //TODO Remove this word from error words if it comes from another level
-
+            this.setState({currentWordErrors: 0});
             return true;
         } else {
+            this.setState({
+                currentWordErrors: this.state.currentWordErrors + 1,
+                errors: this.state.errors + 1,
+            });
+                    //Word was wrong, so increase priority
+            data.media.forEach((m, i) => {
+                if (m.correctWord == this.state.media.correctWord) {
+                    data.media[i].priority += 0.45;
+                }
+            });
             //Player did not choose the right word
             AsyncStorage.getItem('@Lecture:numberOfErrors:level'+this.state.currentLevel).then((str) => {
                 //Increment error number for this level
@@ -253,7 +251,7 @@ class App extends Component {
                 var ers = {};
                 ers['level_'+this.state.currentLevel] = [this.state.media.correctWord.toLowerCase()];
                 AsyncStorage.setItem('@Lecture:errors', JSON.stringify(ers));
-            })
+            });
 
             return false;
         }
@@ -267,7 +265,7 @@ class App extends Component {
 
         var buttons = this.state.words.map((word) => {
             return (
-                <Button key={this.state.currentImageIndex + '' + word} onPress={this.onPressButton} label={word} font={this.state.buttonFont} />
+                <Button key={this.state.currentImageIndex + '' + word} onPress={this.onPressButton} label={word} font={this.state.buttonFont} disable={this.state.disableButtons} />
             );
         });
 

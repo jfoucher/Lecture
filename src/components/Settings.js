@@ -47,13 +47,13 @@ class Settings extends Component {
             <Modal animationType={"slide"} transparent={false} visible={this.state.modalVisible} onRequestClose={this.close}>
                 
                 <View style={styles.modal}>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 0.4}}>
                         <Text style={styles.title}>Paramètres</Text>
                         <View style={{marginTop: 0}}>
                             <SettingsList currentFont={this.props.currentFont} onSettingsChanged={this.props.onChange} />
                         </View>
                     </View>
-                    <View style={{flex: 1.2}}>
+                    <View style={{flex: 0.6}}>
                         <Text style={styles.title}>Remerciements</Text>
                         <ThanksList />
                     </View>
