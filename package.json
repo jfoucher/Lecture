@@ -6,7 +6,9 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "build-android": "cd android && ./gradlew assembleRelease && cd ..",
-    "deploy-android": "cd android && ./gradlew assembleRelease && scp app/build/outputs/apk/app-release.apk deploy@ovh:/var/www/leanr/shared/web/ && cd .."
+    "deploy-android": "cd android && ./gradlew assembleRelease && scp app/build/outputs/apk/app-release.apk deploy@ovh:/var/www/leanr/shared/web/ && cd ..",
+    "web-dev": "./node_modules/.bin/webpack-dev-server -d --config ./web/webpack.config.js --inline --hot --colors",
+    "web-prod": "rm -rf ./dist/* && cp ./web/src/index.html ./dist/ && ./node_modules/.bin/webpack -p --config ./web/webpack.config.js"
   },
   "dependencies": {
     "howler": "^2.0.9",
@@ -16,6 +18,7 @@
     "react-native-linear-gradient": "^2.0.0",
     "react-native-sound": "^0.8.3",
     "react-native-web": "^0.5.4",
+    "react-native-web-image-loader": "^0.0.5",
     "react-native-web-modal": "^1.0.1",
     "styled-components": "^3.2.5"
   },

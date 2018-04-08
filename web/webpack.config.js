@@ -31,8 +31,8 @@ const babelLoaderConfiguration = {
 };
 
 // This is needed for webpack to import static images in JavaScript files.
-const imageLoaderConfiguration = {
-  test: /\.(gif|jpe?g|png|svg|mp3|ttf)$/,
+const resourceLoaderConfiguration = {
+  test: /\.(svg|mp3|ttf)$/,
   use: {
     loader: 'url-loader',
     options: {
@@ -40,6 +40,11 @@ const imageLoaderConfiguration = {
     }
   }
 };
+
+const imageLoaderConfiguration = {
+  test: /\.(png|jpe?g|gif)$/,
+  loader: 'react-native-web-image-loader?name=[hash].[ext]'
+}
 
 module.exports = {
   // your web-specific entry file
@@ -57,6 +62,7 @@ module.exports = {
 
   module: {
     rules: [
+      resourceLoaderConfiguration,
       babelLoaderConfiguration,
       imageLoaderConfiguration
     ]
