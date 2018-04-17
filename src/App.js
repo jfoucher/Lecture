@@ -9,6 +9,7 @@ import {
     Image,
     AsyncStorage,
     Platform,
+    Dimensions,
 } from 'react-native';
 
 
@@ -24,6 +25,8 @@ const ERROR_FACTOR = 1.32;
 const DECAY_FACTOR = 1.2;
 const USED_FACTOR = 2;
 
+var {height, width} = Dimensions.get('window');
+
 const tada = new Sound('tada.mp3', Sound.MAIN_BUNDLE, (error) => {
     if (error) {
         console.error('failed to load the sound', error);
@@ -32,7 +35,8 @@ const tada = new Sound('tada.mp3', Sound.MAIN_BUNDLE, (error) => {
     }
 });
 
-const successSounds = [['awesome.mp3', 'fantastic.mp3', 'perfect.mp3'], ['great.mp3', 'super.mp3'], ['good.mp3', 'ok.mp3']].map((ss) => {
+
+const successSounds = [['awesome.mp3', 'fantastic.mp3', 'perfect.mp3'], ['great.mp3', 'sup.mp3'], ['good.mp3', 'ok.mp3']].map((ss) => {
     return ss.map((s) => {
         return new Sound(s, Sound.MAIN_BUNDLE, (error) => {
             if (error) {
@@ -112,7 +116,7 @@ class App extends Component {
         }
 
         const words = shuffle(levelWords).slice(0, 2).concat([media.correctWord]);
-
+        console.log('got new image', media, words);
         return {media, words: shuffle(words)};
     }
 
@@ -134,7 +138,6 @@ class App extends Component {
         const cursiveFont = (Platform.OS === 'web') ? 'CursiveStandard' : 'Cursive standard';
         AsyncStorage.getItem('@Lecture:Settings:ButtonFont').then((font) => {
             //Get previously selected font
-            
             if(!font) {
                 font = cursiveFont;
             }
@@ -156,7 +159,7 @@ class App extends Component {
                 AsyncStorage.setItem('@Lecture:numberOfErrors:level'+l.substring(l.indexOf('_')+1), JSON.stringify(0));
             }
         }
-
+        this.setState({ media: false });
         let {media, words} = this.getNewImage();
         this.setState({
             win:false,
@@ -174,6 +177,9 @@ class App extends Component {
         console.log('button pressed');
         //TODO add a new word and shuffle buttons on error
         if(this.state.win === true) {
+            this.setState({
+                media: false,
+            });
             //Clicked button to go to next level, set win to false and get new image
             //TODO only go to next level if no errors, otherwise start current level again
 
@@ -194,9 +200,12 @@ class App extends Component {
         }
 
         if(el === this.state.media.correctWord) {
-            this.setState({disableButtons: true});
+            this.setState({
+                disableButtons: true,
+                // media: false,
+            });
             //Player chose correct word, display another image
-            const sounds = successSounds[this.state.currentWordErrors]
+            const sounds = successSounds[this.state.currentWordErrors];
             sounds[Math.floor(Math.random()*sounds.length)].play((success) => {
                 let level = Math.floor(this.state.currentImageIndex / LEVEL_CONSTANT - this.state.errors / LEVEL_CONSTANT * 2) + 1;
                 if (level < 1) {
@@ -233,7 +242,6 @@ class App extends Component {
                     });
                 }
             });
-
             
             return true;
         } else {
@@ -303,6 +311,7 @@ class App extends Component {
                 <View style={styles.instructions}>
                     {buttons}
                 </View>
+            
                 <Settings onChange={this.gotNewSettings} currentFont={this.state.buttonFont} visible={this.state.settingsVisible} onClose={() => {this.setState({settingsVisible: false})}} />
                 <View style={{position: 'absolute', top:0, right: 2}}>
                     <TouchableWithoutFeedback onPress={() => {console.log('close called');this.setState({settingsVisible: true})}}>

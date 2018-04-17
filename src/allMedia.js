@@ -102,7 +102,7 @@ var allMedia = [
     {string: '🔥', type: 'image', doc: require('../assets/img/png/1f525.png'), correctWord: 'Feu', difficulty: 2},
     {string: '🔦', type: 'image', doc: require('../assets/img/png/1f526.png'), correctWord: 'Lampe', difficulty: 2},
     {string: '🔨', type: 'image', doc: require('../assets/img/png/1f528.png'), correctWord: 'Marteau', difficulty: 2},
-    {string: '🕺', type: 'image', doc: require('../assets/img/png/1f57a.png'), correctWord: 'Danser', difficulty: 2},
+    {string: '🕺', type: 'image', doc: require('../assets/img/png/1f57a.png'), correctWord: 'Danser'},
     {string: '🖨', type: 'image', doc: require('../assets/img/png/1f5a8.png'), correctWord: 'Imprimante', difficulty: 3},
     // {string: '🙁', type: 'image', doc: require('../assets/img/png/1f641.png'), correctWord: 'Triste', difficulty: 2},
     {string: '🙇', type: 'image', doc: require('../assets/img/png/1f647.png'), correctWord: 'Dommage'},

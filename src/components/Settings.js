@@ -47,14 +47,14 @@ class Settings extends Component {
             <Modal animationType={"slide"} transparent={false} visible={this.state.modalVisible} onRequestClose={this.close} style={{display: this.state.modalVisible ? 'flex' : 'none'}}>
                 
                 <View style={styles.modal}>
-                    <View style={{flex: 0.4}}>
+                    <View style={{flex: 0.5}}>
                         <Text style={styles.title}>Paramètres</Text>
                         <View style={{marginTop: 0}}>
                             <SettingsList currentFont={this.props.currentFont} onSettingsChanged={this.props.onChange} />
                         </View>
                     </View>
                     { Platform.OS === 'web' ? null : 
-                        <View style={{flex: 0.6}}>
+                        <View style={{flex: 0.5}}>
                             <Text style={styles.title}>Remerciements</Text>
                             <ThanksList />
                         </View>

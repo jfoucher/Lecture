@@ -4,7 +4,6 @@ import {
     View,
     Text,
     ListView,
-    ScrollView,
     Switch,
     TouchableOpacity,
     Alert,
